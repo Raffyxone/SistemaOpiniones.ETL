@@ -1,0 +1,4 @@
+﻿EncuestaId,ClienteId,ProductoId,Fecha,Calificacion,Comentario,Sentimiento
+1001,C-123,P-001,2025-11-06T10:30:00,5,"Excelente servicio, muy rapido",Positivo
+1002,C-456,P-002,2025-11-07T11:00:00,2,"El producto llego dañado",Negativo
+1003,C-789,P-001,2025-11-07T14:15:00,4,"Es bueno, pero podria mejorar el precio",Neutro
