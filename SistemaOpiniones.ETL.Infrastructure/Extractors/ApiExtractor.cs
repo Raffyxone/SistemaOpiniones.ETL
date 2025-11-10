@@ -1,12 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SistemaOpiniones.ETL.Domain.Entities;
 using SistemaOpiniones.ETL.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SistemaOpiniones.ETL.Infrastructure.Extractors
 {
@@ -14,7 +9,6 @@ namespace SistemaOpiniones.ETL.Infrastructure.Extractors
     {
         private readonly ILogger<ApiExtractor> _logger;
         private readonly HttpClient _httpClient;
-
         public string FuenteNombre => "ComentariosApi";
 
         public ApiExtractor(ILogger<ApiExtractor> logger, IHttpClientFactory httpClientFactory)
@@ -36,17 +30,24 @@ namespace SistemaOpiniones.ETL.Infrastructure.Extractors
                 {
                     foreach (var review in response)
                     {
-                        opiniones.Add(new OpinionFuente
+                        try
                         {
-                            OpinionFuenteId = review.Id.ToString(),
-                            FuenteNombre = FuenteNombre,
-                            FechaOpinion = DateTime.UtcNow,
-                            ClienteIdExterno = review.Email,
-                            ProductoIdExterno = review.PostId.ToString(),
-                            Calificacion = (review.Id % 5) + 1,
-                            Comentario = review.Body,
-                            SentimientoDetectado = null!
-                        });
+                            opiniones.Add(new OpinionFuente
+                            {
+                                OpinionFuenteId = review.Id.ToString(),
+                                FuenteNombre = FuenteNombre,
+                                FechaOpinion = DateTime.UtcNow,
+                                ClienteIdExterno = review.Email,
+                                ProductoIdExterno = review.PostId.ToString(),
+                                Calificacion = (review.Id % 5) + 1,
+                                Comentario = review.Body,
+                                SentimientoDetectado = null!
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning(ex, "Error al mapear registro de API con id: {ApiId}. Registro omitido.", review.Id);
+                        }
                     }
                 }
             }
