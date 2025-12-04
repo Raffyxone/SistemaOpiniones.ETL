@@ -13,9 +13,9 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [Dimension].[DimCustomer](
 	[CustomerKey] [int] IDENTITY(1,1) NOT NULL,
-	[CustomerID] [varchar](255) NULL, /* Definido correctamente desde el inicio para soportar IDs alfanuméricos */
+	[CustomerID] [varchar](255) NULL,
 	[FullName] [varchar](200) NULL,
-	[Email] [varchar](150) NULL,      /* Agregado para soportar el mapeo completo */
+	[Email] [varchar](150) NULL,    
 	[Country] [varchar](90) NULL,
 	[City] [varchar](90) NULL,
 	[Age] [int] NULL,
@@ -57,10 +57,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [Dimension].[DimProduct](
 	[ProductKey] [int] IDENTITY(1,1) NOT NULL,
-	[ProductID] [varchar](255) NULL, /* Definido correctamente desde el inicio */
+	[ProductID] [varchar](255) NULL
 	[ProductName] [varchar](200) NOT NULL,
 	[Brand] [varchar](100) NULL,
-	[Price] [decimal](18, 2) NULL,   /* Ajustada precisión para coincidir con C# */
+	[Price] [decimal](18, 2) NULL, 
 	[CategoryName] [varchar](80) NOT NULL,
 	[DateFrom] [datetime2](7) NULL DEFAULT GETDATE(),
 	[DateTo] [datetime2](7) NULL,
@@ -158,7 +158,7 @@ GO
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Esta es la tabla más importante. Cada fila es una opinión única, conectada a todas las dimensiones para darnos el contexto completo del evento' , @level0type=N'SCHEMA',@level0name=N'Fact', @level1type=N'TABLE',@level1name=N'FactOpinions'
 GO
 
-/****** Tipos de Tabla para Carga Masiva (TVP) - REQUERIDO PARA EL CÓDIGO C# ******/
+/*Tipos de Tabla para Carga Masiva (TVP) - REQUERIDO PARA EL CÓDIGO C#*/
 IF TYPE_ID(N'[Dimension].[DimCustomerType]') IS NULL
 BEGIN
     CREATE TYPE [Dimension].[DimCustomerType] AS TABLE (
@@ -214,6 +214,22 @@ DBCC CHECKIDENT ('[Dimension].[DimSource]', RESEED, 0);
 DBCC CHECKIDENT ('[Dimension].[DimSentiment]', RESEED, 0);
 GO
 
-ALTER TABLE [Dimension].[DimCustomer] 
-ADD [Email] [varchar](150) NULL;
-GO
+--1. Verificar Clientes
+SELECT CustomerKey, CustomerID, FullName, Email, IsCurrentRecord 
+FROM [Dimension].[DimCustomer]
+
+--2. Verificar Productos
+SELECT ProductKey, ProductID, ProductName, Price, CategoryName 
+FROM [Dimension].[DimProduct]
+
+--3. Verificar Fuentes
+SELECT * FROM [Dimension].[DimSource]
+
+--4. Verificar Sentimientos
+SELECT * FROM [Dimension].[DimSentiment]
+
+SELECT 'Total Clientes (Esperado: 9)' AS Verificacion, COUNT(*) AS Cantidad 
+FROM Dimension.DimCustomer
+UNION ALL
+SELECT 'Total Productos (Esperado: 2)' AS Verificacion, COUNT(*) AS Cantidad 
+FROM Dimension.DimProduct

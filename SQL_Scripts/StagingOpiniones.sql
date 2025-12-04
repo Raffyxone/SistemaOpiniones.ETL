@@ -37,7 +37,5 @@ BEGIN
     );
 END
 
-USE [StagingDB];
-GO
 TRUNCATE TABLE OpinionesStaging;
 GO
