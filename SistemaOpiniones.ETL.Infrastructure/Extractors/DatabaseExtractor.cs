@@ -23,7 +23,7 @@ namespace SistemaOpiniones.ETL.Infrastructure.Extractors
             var opiniones = new List<OpinionFuente>();
             try
             {
-                var fechaDesde = DateTime.UtcNow.AddDays(-1);
+                var fechaDesde = DateTime.UtcNow.AddDays(-730);
                 var reseñas = await _opinionRepository.GetNewOpinionsAsync(fechaDesde, cancellationToken);
 
                 foreach (var reseña in reseñas)

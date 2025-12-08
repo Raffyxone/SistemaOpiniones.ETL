@@ -63,7 +63,9 @@ public class Program
                 services.AddScoped<IOpinionRepository, OpinionRepository>();
                 services.AddScoped<IExtractorFactory, ExtractorFactory>();
                 services.AddScoped<IStagingService, StagingService>();
+
                 services.AddScoped<IDwhLoaderService, DwhLoaderService>();
+                services.AddScoped<IFactLoaderService, FactLoaderService>();
 
                 services.AddHostedService<Worker>();
             });

@@ -24,7 +24,7 @@ namespace SistemaOpiniones.ETL.Infrastructure.Extractors
 
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<List<JsonPlaceholderComment>>("comments?_limit=5", cancellationToken);
+                var response = await _httpClient.GetFromJsonAsync<List<JsonPlaceholderComment>>("comments?_limit=500", cancellationToken);
 
                 if (response != null)
                 {
@@ -32,6 +32,10 @@ namespace SistemaOpiniones.ETL.Infrastructure.Extractors
                     {
                         try
                         {
+                            var score = (review.Id % 5) + 1;
+
+                            string sentimiento = score >= 4 ? "Positivo" : (score == 3 ? "Neutro" : "Negativo");
+
                             opiniones.Add(new OpinionFuente
                             {
                                 OpinionFuenteId = review.Id.ToString(),
@@ -39,9 +43,9 @@ namespace SistemaOpiniones.ETL.Infrastructure.Extractors
                                 FechaOpinion = DateTime.UtcNow,
                                 ClienteIdExterno = review.Email,
                                 ProductoIdExterno = review.PostId.ToString(),
-                                Calificacion = (review.Id % 5) + 1,
+                                Calificacion = score,
                                 Comentario = review.Body,
-                                SentimientoDetectado = null!
+                                SentimientoDetectado = sentimiento
                             });
                         }
                         catch (Exception ex)

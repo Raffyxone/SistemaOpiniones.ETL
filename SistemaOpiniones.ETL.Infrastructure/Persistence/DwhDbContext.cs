@@ -11,6 +11,7 @@ namespace SistemaOpiniones.ETL.Infrastructure.Persistence
         public DbSet<DimProduct> DimProducts { get; set; }
         public DbSet<DimSource> DimSources { get; set; }
         public DbSet<DimSentiment> DimSentiments { get; set; }
+        public DbSet<FactOpinion> FactOpinions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,6 +21,8 @@ namespace SistemaOpiniones.ETL.Infrastructure.Persistence
             modelBuilder.Entity<DimSentiment>().ToTable("DimSentiment", "Dimension").HasKey(e => e.SentimentKey);
 
             modelBuilder.Entity<DimProduct>().Property(p => p.Price).HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<FactOpinion>().ToTable("FactOpinions", "Fact").HasKey(e => e.OpinionKey);
         }
     }
 }

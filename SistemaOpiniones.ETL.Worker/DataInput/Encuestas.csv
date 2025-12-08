@@ -2,3 +2,33 @@
 1001,C-123,P-001,2025-11-06T10:30:00,5,"Excelente servicio, muy rapido",Positivo
 1002,C-456,P-002,2025-11-07T11:00:00,Mala,"El producto llego dañado",Negativo
 1003,C-789,P-001,2025-11-07T14:15:00,4,"Es bueno, pero podria mejorar el precio",Neutro
+1004,C-101,P-003,2024-01-15T09:00:00,5,"Me encantó la calidad de la tela",Positivo
+1005,C-102,P-001,2024-02-20T10:30:00,3,"El envío fue lento pero el producto está bien",Neutro
+1006,C-103,P-002,2024-03-05T16:45:00,1,"No funciona como esperaba, quiero reembolso",Negativo
+1007,C-104,P-004,2024-03-10T12:00:00,5,"Increíble, superó mis expectativas",Positivo
+1008,C-105,P-001,2024-04-01T14:20:00,4,"Buen producto, lo recomendaría",Positivo
+1009,C-106,P-003,2024-04-15T11:10:00,2,"Llegó la caja golpeada",Negativo
+1010,C-107,P-002,2024-05-05T09:30:00,5,"Atención al cliente de primera",Positivo
+1011,C-108,P-005,2024-05-20T15:00:00,3,"Es normal, nada del otro mundo",Neutro
+1012,C-109,P-001,2024-06-10T10:00:00,5,"Lo compré para regalo y les encantó",Positivo
+1013,C-110,P-004,2024-06-25T13:45:00,1,"Pésima calidad, se rompió al primer uso",Negativo
+1014,C-111,P-002,2024-07-01T08:30:00,4,"Muy útil para el día a día",Positivo
+1015,C-112,P-003,2024-07-15T17:00:00,5,"Excelente relación calidad-precio",Positivo
+1016,C-113,P-001,2024-08-05T11:15:00,2,"No es el color que se ve en la foto",Negativo
+1017,C-114,P-005,2024-08-20T14:40:00,3,"Funciona, pero hace mucho ruido",Neutro
+1018,C-115,P-002,2024-09-10T10:20:00,5,"Volveré a comprar sin duda",Positivo
+1019,C-116,P-004,2024-09-25T16:00:00,4,"Llegó antes de lo esperado",Positivo
+1020,C-117,P-003,2024-10-05T12:30:00,1,"Instrucciones muy confusas, imposible armar",Negativo
+1021,C-118,P-001,2024-10-20T09:15:00,5,"Una maravilla de tecnología",Positivo
+1022,C-119,P-002,2024-11-01T15:50:00,2,"Muy caro para lo que es",Negativo
+1023,C-120,P-005,2024-11-15T11:40:00,4,"Satisfecho con la compra",Positivo
+1024,C-121,P-003,2024-12-01T10:00:00,3,"El empaque venía abierto",Neutro
+1025,C-122,P-004,2024-12-05T14:10:00,5,"Perfecto para mi oficina",Positivo
+1026,C-123,P-001,2025-01-10T13:25:00,1,"Dejó de funcionar a la semana",Negativo
+1027,C-124,P-002,2025-01-25T09:50:00,4,"Buen diseño y materiales",Positivo
+1028,C-125,P-005,2025-02-14T11:30:00,5,"El mejor regalo de San Valentin",Positivo
+1029,C-126,P-003,2025-03-01T16:20:00,2,"Muy pequeño, no me sirvió",Negativo
+1030,C-127,P-004,2025-03-15T10:45:00,3,"Cumple su función, pero nada especial",Neutro
+1031,C-128,P-001,2025-04-05T15:00:00,5,"Servicio técnico muy amable",Positivo
+1032,C-129,P-002,2025-04-20T12:15:00,4,"Todo correcto, sin quejas",Positivo
+1033,C-130,P-005,2025-05-10T09:00:00,1,"Publicidad engañosa",Negativo

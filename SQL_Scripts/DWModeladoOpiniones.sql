@@ -196,7 +196,6 @@ BEGIN
 END
 GO
 
-
 DELETE FROM [Fact].[FactOpinions];
 GO
 
@@ -228,8 +227,53 @@ SELECT * FROM [Dimension].[DimSource]
 --4. Verificar Sentimientos
 SELECT * FROM [Dimension].[DimSentiment]
 
-SELECT 'Total Clientes (Esperado: 9)' AS Verificacion, COUNT(*) AS Cantidad 
-FROM Dimension.DimCustomer
-UNION ALL
-SELECT 'Total Productos (Esperado: 2)' AS Verificacion, COUNT(*) AS Cantidad 
-FROM Dimension.DimProduct
+/*pa llenar con fechas mi dimdate y así mi facttable ir sin problemas*/
+SET NOCOUNT ON
+
+DECLARE @StartDate DATE = '2024-01-01'
+DECLARE @EndDate   DATE = '2030-12-31'
+
+SET DATEFIRST 7
+
+WHILE @StartDate <= @EndDate
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Dimension.DimDate WHERE Date = @StartDate)
+    BEGIN
+        INSERT INTO Dimension.DimDate (
+            DateKey, Date, Year, Quarter, Month, MonthName, Day, DayOfWeekName, IsWeekName
+        )
+        VALUES (
+            CAST(FORMAT(@StartDate, 'yyyyMMdd') AS INT),
+            @StartDate,
+            YEAR(@StartDate),
+            DATEPART(QUARTER, @StartDate),
+            MONTH(@StartDate),
+            DATENAME(MONTH, @StartDate),
+            DAY(@StartDate),
+            DATENAME(WEEKDAY, @StartDate),
+            CASE WHEN DATEPART(WEEKDAY, @StartDate) IN (1, 7) THEN 1 ELSE 0 END
+        )
+    END
+
+    SET @StartDate = DATEADD(DAY, 1, @StartDate)
+END
+PRINT 'Proceso de DimDate finalizado (se ignoraron duplicados).'
+GO
+
+SELECT 
+    dp.ProductName,
+    COUNT(*) as CantidadOpiniones,
+    AVG(fo.SatisfactionScore) as PromedioSatisfaccion
+FROM Fact.FactOpinions fo
+JOIN Dimension.DimProduct dp ON fo.ProductKey = dp.ProductKey
+GROUP BY dp.ProductName
+ORDER BY CantidadOpiniones DESC
+
+/*para ver la cantidad de ingresos por fuente*/
+SELECT 
+    ds.SourceName AS Fuente,
+    COUNT(*) AS Cantidad_Registros
+FROM Fact.FactOpinions fo
+JOIN Dimension.DimSource ds ON fo.SourceKey = ds.SourceKey
+GROUP BY ds.SourceName
+ORDER BY Cantidad_Registros DESC

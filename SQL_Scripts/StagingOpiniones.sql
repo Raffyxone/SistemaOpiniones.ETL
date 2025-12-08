@@ -4,7 +4,8 @@ USE [StagingDB]
 GO 
 DELETE FROM OpinionesStaging;
 
-CREATE TABLE [dbo].[OpinionesStaging]( [OpinionFuenteId] [varchar](255) NOT NULL, 
+CREATE TABLE [dbo].[OpinionesStaging]( 
+[OpinionFuenteId] [varchar](255) NOT NULL, 
 [FuenteNombre] [varchar](100) NOT NULL,
 [FechaOpinion] [datetime2](7) NOT NULL, 
 [ClienteIdExterno] [varchar](255) NULL,
@@ -21,7 +22,6 @@ select FuenteNombre, count(*) as Registros
 from StagingDB.dbo.OpinionesStaging
 group by FuenteNombre
 
--- Ejecutar esto en tu base de datos StagingDB
 IF TYPE_ID(N'OpinionFuenteType') IS NULL
 BEGIN
     CREATE TYPE dbo.OpinionFuenteType AS TABLE (
@@ -37,5 +37,5 @@ BEGIN
     );
 END
 
-TRUNCATE TABLE OpinionesStaging;
+TRUNCATE TABLE OpinionesStaging
 GO

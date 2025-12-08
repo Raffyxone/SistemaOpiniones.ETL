@@ -15,6 +15,7 @@ namespace SistemaOpiniones.ETL.Application
         private readonly IExtractorFactory _extractorFactory;
         private readonly IStagingService _stagingService;
         private readonly IDwhLoaderService _dwhLoaderService;
+        private readonly IFactLoaderService _factLoaderService;
         private readonly EtlProcessOptions _options;
 
         public EtlOrchestrator(
@@ -22,12 +23,14 @@ namespace SistemaOpiniones.ETL.Application
             IExtractorFactory extractorFactory,
             IStagingService stagingService,
             IDwhLoaderService dwhLoaderService,
+            IFactLoaderService factLoaderService,
             IOptions<EtlProcessOptions> options)
         {
             _logger = logger;
             _extractorFactory = extractorFactory;
             _stagingService = stagingService;
             _dwhLoaderService = dwhLoaderService;
+            _factLoaderService = factLoaderService;
             _options = options.Value;
         }
 
@@ -39,48 +42,43 @@ namespace SistemaOpiniones.ETL.Application
             foreach (var sourceName in _options.SourcesToRun)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                var stopwatch = Stopwatch.StartNew();
-                _logger.LogInformation("--- Iniciando extracción: {FuenteNombre} ---", sourceName);
-
                 try
                 {
+                    _logger.LogInformation("--- Iniciando extracción: {FuenteNombre} ---", sourceName);
                     var extractor = _extractorFactory.GetExtractor(sourceName);
                     var extractedData = await extractor.ExtractAsync(cancellationToken);
-                    int count = extractedData.Count();
-                    _logger.LogInformation("Datos extraídos de {FuenteNombre}: {Count} registros.", sourceName, count);
 
-                    if (count > 0)
+                    if (extractedData.Any())
                     {
                         await _stagingService.StageDataAsync(extractedData, cancellationToken);
                     }
-
-                    stopwatch.Stop();
-                    _logger.LogInformation("--- Extractor {FuenteNombre} finalizado en {Elapsed}ms ---", sourceName, stopwatch.ElapsedMilliseconds);
-                }
-                catch (NotSupportedException nsex)
-                {
-                    _logger.LogWarning(nsex.Message);
                 }
                 catch (Exception ex)
                 {
-                    stopwatch.Stop();
                     _logger.LogError(ex, "Fallo el extractor {FuenteNombre}.", sourceName);
                 }
             }
 
             if (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("--- INICIO FASE 2: Carga Dimensiones DWH ---");
                 try
                 {
-                    var dimStopwatch = Stopwatch.StartNew();
+                    _logger.LogInformation("--- FASE 2: Carga Dimensiones DWH ---");
                     await _dwhLoaderService.LoadDimensionsAsync(cancellationToken);
-                    dimStopwatch.Stop();
-                    _logger.LogInformation("Carga de Dimensiones completada en {Elapsed}ms.", dimStopwatch.ElapsedMilliseconds);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error crítico durante la carga de dimensiones.");
+                }
+
+                try
+                {
+                    _logger.LogInformation("--- FASE 3: Carga Fact Table ---");
+                    await _factLoaderService.LoadFactOpinionsAsync(cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error crítico durante la carga de Facts.");
                 }
             }
 
